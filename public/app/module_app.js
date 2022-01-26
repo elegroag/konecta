@@ -31,7 +31,8 @@ function($stateProvider, $urlRouterProvider, NotificationProvider){
 		url: '/mostrar/:id',
 		templateUrl: base_url+"/public/app/views/tmp_mostrar_producto.html",
 		controller: 'MostrarProducto'
-	}).state({
+	})
+	.state({
 		name: "ventas_stock",
 		url: "/ventas_stock",
 		templateUrl: base_url+"/public/app/views/tmp_ventas_stock.html",
@@ -74,13 +75,13 @@ factory('_app', function($http, Notification, $state){
 			if(response.data.state == 200)
 			{
 				_app.producto = response.data.model;
-				_app.categoria = _.findWhere(_app.categorias, {id: ""+producto.categoria});
+				_app.categoria = _.findWhere(_app.categorias, {id: ""+producto.idcategoria});
 				_app.producto.categoria = _app.categoria.categoria;
 				_app.productos.push(_app.producto);
 				Notification.success('Registro con éxito');
 				$state.go('index');
 			}else{
-				Notification.error('Registro no es posible, error de validación');
+				Notification.error_app('Registro no es posible, error de validación');
 			}
 		}, function errorCallback(response){
 			Notification.error('Error, el registro no es posible</br>'+response.data.message);
@@ -95,27 +96,35 @@ factory('_app', function($http, Notification, $state){
 		}).then(function successCallback(response)
 		{
 			var indice = _app.productos.indexOf(_app.productos);
-			_app.categoria = _.findWhere(_app.categorias, {id: ""+producto.categorias_id});
+			_app.categoria = _.findWhere(_app.categorias, {id: ""+producto.idcategoria});
 
 			_app.producto.categoria = _app.categoria.categoria;
 			_app.productos[indice] = _app.producto;
 			Notification.success('Registro con éxito');
 		}, function errorCallback(response){
-				Notification.error('Error, el registro no es posible</br>'+response.data.message);
+			Notification.error('Error, el registro no es posible</br>'+response.data.message);
 		});
 	};
 
-	_app.remove_producto = function(producto){
+	_app.remove_producto = function(_id){
 		$http({
-			method: 'delete',
-			dataType: 'json',
-			url: site_url+'rest_productos/'+producto.id
+			url: `${site_url}rest_productos/${_id}`,
+			method: 'DELETE',
+			dataType: "json"
 		}).then(function successCallback(response){
-			var indice = _app.productos.indexOf(producto);
+			var indice = _.lastIndexOf(_app.productos, {id: _id});
 			_app.productos.splice(indice, 1);
 			Notification.success('Registro con éxito');
 		}, function errorCallback(response){
-			console.log(response.responseText);
+			Notification.error('Error, el registro no es posible</br>'+response.responseText);
+		});
+	};
+
+	_app.informe_stock =function(){
+		return $http({
+			url: `${site_url}productos/informe`,
+			method: 'get',
+			dataType: "json"
 		});
 	};
 
@@ -124,6 +133,7 @@ factory('_app', function($http, Notification, $state){
 .controller('ListarProductos', function($scope, $state, _app){
 	$scope.productos = _app.productos;
 	$scope.categorias = _app.categorias;
+	_app.producto = {};
 
 	$scope.agregar = function(){
 		$state.go('agregar');
@@ -134,9 +144,9 @@ factory('_app', function($http, Notification, $state){
 		$state.go('editar', {id: producto.id});
 	};
 
-	$scope.borrar = function(producto){
+	$scope.borrando = function(producto){	
 		_app.producto = producto;
-		_app.remove_producto(producto);
+		_app.remove_producto(producto.id);
 	};
 
 	$scope.mostrar = function(producto){
@@ -231,7 +241,24 @@ factory('_app', function($http, Notification, $state){
 		$state.go('index');
 	};
 })
-.controller('VentasStock', function($scope, $state, $app){
+.controller('VentasStock', function($scope, $state, _app){
+	
+	$scope.mas_vendidos = {};
+	$scope.mayor_stock = {};
+	
+	$app.informe_stock().
+	then(function successCallback(response){
+		if(response.data.state == 200)
+		{
+			$scope.mas_vendidos = response.data.mas_vendidos;
+			$scope.mayor_stock = response.data.mayor_stock;
+		}else{
+			Notification.error_app('Registro no es posible, error de validación');
+		}
+	}, function errorCallback(response){
+		Notification.error('Error, el registro no es posible</br>'+response.responseText);
+	});
+
 	$scope.lista = function(){
 		$state.go('index');
 	};
