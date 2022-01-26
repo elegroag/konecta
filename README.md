@@ -47,3 +47,20 @@ $~ git pull origin produccion
 ```
 
 * Segun el ambiente git intentara comprobar el Fast-forward que estas a punto de hacer. Se debe confirmar y ya está listo.
+
+Consultas
+----
+
+```
+SELECT max(stock), productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria 
+FROM productos
+INNER JOIN categorias ON categorias.id=productos.categoria;
+
+SELECT count(productos.id) as cantidad, productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria 
+FROM ventas
+INNER JOIN productos ON productos.id=ventas.producto 
+INNER JOIN categorias ON categorias.id=productos.categoria
+GROUP BY productos.id
+ORDER BY count(productos.id) DESC 
+LIMIT 1;
+```
