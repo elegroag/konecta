@@ -26,4 +26,14 @@ class ManagerProductos extends CI_Controller {
 		$this->render($content);
 	}
 
+	public function informe()
+	{
+		$data = [
+			"success" => true,
+			"mas_vendidos"=> $this->producto->mas_vendidos(),
+			"mayor_stock"=> $this->producto->mayor_stock()
+		];
+		echo json_encode($data, JSON_NUMERIC_CHECK);
+	}
+
 }

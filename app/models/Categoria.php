@@ -22,12 +22,6 @@
 		return $query;
 	}
 
-	public function get_use_email($email)
-	{
-		$query = $this->db->query("SELECT * FROM ".self::$table." WHERE email='".$email."'")->row();
-		return $query;
-	}
-
 	public function save($insert)
 	{
 		if(is_array($insert)){

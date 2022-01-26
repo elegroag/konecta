@@ -11,12 +11,12 @@ class Productos extends REST_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model(array("producto"));
+		$this->load->model(array("producto", "categoria"));
 	}
 
 	public function index_get()
 	{
-		$data = $this->persona->get_all();
+		$data = $this->producto->get_all();
 		$this->response($data, 200);
 	}
 
@@ -24,19 +24,26 @@ class Productos extends REST_Controller
 	{
 		$data = json_decode(file_get_contents("php://input"));
 		$insert = [
-				"documento"     => $data->documento,
-				"email"         => $data->email,
-				"nombres"       => $data->nombres,
-				"apellidos"     => $data->apellidos,
-				"municipios_id" => $data->municipios_id
+			"referencia"=> $data->referencia,
+			"precio"=> $data->precio,
+			"nombre"=> $data->nombre,
+			"peso"=> $data->peso,
+			"stock"=> $data->stock,
+			"categoria"=> $data->idcategoria
 		];
-		$persona = $this->persona->create($insert);
-		if($persona){
-			$persona = $this->persona->save($persona);
-			$this->response(["model" => $persona, "state"=>200]);
-		}else{
+		$producto = $this->producto->create($insert);
+		if($producto){
+			$producto = $this->producto->save($producto);
+
+			$categorias = (object) $this->categoria->get_use_id($producto->categoria);
+			$producto->idcategoria = $producto->categoria;
+			$producto->categoria = $categorias->categoria;
 			$this->response([
-				"msj"=>"No es posible completar el registro del usuario"], 404);
+				"model" => $producto, 
+				"state"=>200
+			]);
+		}else{
+			$this->response(["msj"=>"No es posible completar el registro del usuario"], 404);
 		}
 	}
 
@@ -45,63 +52,50 @@ class Productos extends REST_Controller
 		$id = $this->uri->segment(2, 0);
 		$data = json_decode(file_get_contents("php://input"));
 		$values = [
-				"documento"     => $data->documento,
-				"email"         => $data->email,
-				"nombres"       => $data->nombres,
-				"apellidos"     => $data->apellidos,
-				"municipios_id" => $data->municipios_id
+			"referencia"=> $data->referencia,
+			"precio"=> $data->precio,
+			"nombre"=> $data->nombre,
+			"peso"=> $data->peso,
+			"stock"=> $data->stock,
+			"categoria"=> $data->idcategoria
 		];
-			$persona = $this->persona->create($values, true);
-		if($persona){
-			if($this->persona->updated($persona, $id)){
-				$this->response(["model" => $persona]);
+		$producto = $this->producto->create($values, true);
+		if($producto)
+		{
+			if($producto->updated($producto, $id))
+			{
+				$categorias = (object) $this->categoria->get_use_id($producto->categoria);
+				$producto->idcategoria = $producto->categoria;
+				$producto->categoria = $categorias->categoria;
+				$this->response(["model" => $producto]);
 			}else{
 				$this->response([
-				"msj"=> "No es posible completar el registro del usuario"], 404);
+				"msj"=> "No es posible completar el registro del usuario 1"], 404);
 			}
 		}else{
 			$this->response([
-				"msj"=> "No es posible completar el registro del usuario"], 404);
+				"msj"=> "No es posible completar el registro del usuario 2"], 404);
 		}
 	}
 
 	public function index_delete()
 	{
 		$id = $this->uri->segment(2, 0);
-		if($this->persona->destroy($id)){
+		if($this->producto->destroy($id)){
 		$this->response([
 			"errors" => false,
-			"msj"     => "El registro se borro con éxito"], 200);
+			"msj"=> "El registro se borro con éxito"], 200);
 		}else{
 		$this->response([
 			"errors" => "",
-			"msj"    => "No es posible remover el registro"], 404);
+			"msj"=> "No es posible remover el registro"], 404);
 		}
 	}
 
-	public function persona_get()
+	public function producto_get()
 	{
 		$id = $this->uri->segment(3, 0);
-		$persona = $this->persona->get_use_id($id);
-		$this->response($persona, 200);
+		$producto = $this->producto->get_use_id($id);
+		$this->response($producto, 200);
 	}
-
-}	$values = [
-	"documento"     => $data->documento,
-	"email"         => $data->email,
-	"nombres"       => $data->nombres,
-	"apellidos"     => $data->apellidos,
-	"municipios_id" => $data->municipios_id
-];
-$persona = $this->persona->create($values, true);
-if($persona){
-if($this->persona->updated($persona, $id)){
-	$this->response(["model" => $persona]);
-}else{
-	$this->response([
-	"msj"=> "No es posible completar el registro del usuario"], 404);
-}
-}else{
-$this->response([
-	"msj"=> "No es posible completar el registro del usuario"], 404);
 }

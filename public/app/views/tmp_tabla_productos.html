@@ -33,11 +33,11 @@
 					<td>{{ producto.categoria }}</td>
 					<td>{{ producto.referencia }}</td>
 					<td>{{ producto.precio }}</td>
-					<td>{{ producto.peso}}</td>
-					<td>{{ producto.stock}}</td>
-					<td><button type="button" ng-click='mostrar(producto)' name="borrar" class="btn btn-default btn-xs btn-info">Ver</button></td>
-					<td><button type="button" ng-click='editar(producto)' name="editar" class="btn btn-default btn-xs btn-info">Editar</button></td>
-					<td><button type="button" ng-click='borrar(producto)' name="borrar" class="btn btn-default btn-xs btn-danger">Borrar</button></td>
+					<td>{{ producto.peso }}</td>
+					<td>{{ producto.stock }}</td>
+					<td><button type="button" ng-click='mostrar(producto)' name="borrar{{producto.id}}" class="btn btn-default btn-xs btn-info">Ver</button></td>
+					<td><button type="button" ng-click='editar(producto)' name="editar{{producto.id}}" class="btn btn-default btn-xs btn-info">Editar</button></td>
+					<td><button type="button" ng-click='borrando(producto)' name="borrando{{producto.id}}" class="btn btn-default btn-xs btn-danger">Borrar</button></td>
 				</tr>
 			</tbody>
 		</table>

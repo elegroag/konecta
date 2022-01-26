@@ -11,7 +11,7 @@
 
 	public function get_all()
 	{
-		$this->db->select('nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
+		$this->db->select('productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
 		$this->db->from(self::$table);
 		$this->db->join('categorias', 'categorias.id=productos.categoria');
 		$rqs = $this->db->get();
@@ -24,30 +24,15 @@
 		return $query;
 	}
 
-	public function get_use_email($email)
-	{
-		$query = $this->db->query("SELECT * FROM ".self::$table." WHERE email='".$email."'")->row();
-		return $query;
-	}
-
 	public function save($insert)
 	{
-		if(is_array($insert)){
-			$user = $this->get_use_email($insert['email']);
+		$this->db->insert(self::$table, $insert);
+		if(!is_object($insert)){
+		$id = $this->db->insert_id();
+			return $id;
 		}else{
-			$user = $this->get_use_email($insert->email);
-		}
-		if(!$user){
-			$this->db->insert(self::$table, $insert);
-			if(!is_object($insert)){
-			$id = $this->db->insert_id();
-				return $id;
-			}else{
-				$this->id = $this->db->insert_id();
-				return $this;
-			}
-		}else{
-			return null;
+			$this->id = $this->db->insert_id();
+			return $this;
 		}
 	}
 
@@ -61,7 +46,8 @@
 	{
 		$_fields = $this->_fields_table();
 		$is_array = is_array($data);
-		foreach($_fields as $row){
+		foreach($_fields as $row)
+		{
 			if($row != "id"){
 				if($is_array){
 				$i=0;
@@ -76,18 +62,11 @@
 					$this->$row = 0;
 				}
 				}else{
-				$this->$row = 0;
+					$this->$row = 0;
 				}
 			}
-			if($row == "created_at"){
-				if($update == null){
+			if($row == "createAt" && $this->$row == 0){
 				$this->$row = date("Y-m-d H:i:s");
-				}
-			}
-			if($row == "updated_at"){
-				if($update == TRUE){
-				$this->$row = date("Y-m-d H:i:s");
-				}
 			}
 		}
 		return $this;
@@ -102,11 +81,13 @@
 	{
 		$this->load->library('form_validation');
 		$_fields = $this->_fields_table();
-		$this->form_validation->set_rules('documento', "", "required|integer");
-		$this->form_validation->set_rules('email', "", "required|valid_email|min_length[20]|max_length[190]");
-		$this->form_validation->set_rules('nombres', "", "required");
-		$this->form_validation->set_rules('apellidos', "", "required");
-		$this->form_validation->set_rules('municipios_id', "", "required|integer");
+		$this->form_validation->set_rules('precio', "precio", "required|integer");
+		$this->form_validation->set_rules('nombre', "nombre", "required");
+		$this->form_validation->set_rules('referencia', "referencia", "required");
+		$this->form_validation->set_rules('categoria', "categoria", "required|integer");
+		$this->form_validation->set_rules('stock', "stock", "required|integer");
+		$this->form_validation->set_rules('peso', "peso", "required|integer");
+
 		$_error = array();
 		if($this->form_validation->run() == FALSE){
 			foreach($_fields as $field){
@@ -126,11 +107,38 @@
 	function _fields_protected($field)
 	{
 		$fields_names = [
-			'documento'     => "identificación",
-			'email'         => "dirección de correo",
-			'municipios_id' => "municipio"
+			'id' => "codigo",
+			'nombre'=> "nombre producto",
+			'categoria'=> 'categoria',
+			'stock' => 'stock',
+			'referencia' => 'referencia',
+			'precio'=> 'precio',
+			'peso'=> 'peso'
 		];
 		return (isset($fields_names[$field]))? $fields_names[$field]: $field;
+	}
+
+	public function mayor_stock()
+	{
+		$this->db->select('productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
+		$this->db->select_max('stock');
+		$this->db->from(self::$table);
+		$this->db->join('categorias', 'categorias.id=productos.categoria');
+		$rqs = $this->db->get();
+		return (is_bool($rqs))? array() : $rqs->row();
+	}
+
+	public function mas_vendidos()
+	{
+		$this->db->select('count(productos.id) as cantidad, productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
+		$this->db->from("ventas");
+		$this->db->join('productos', 'productos.id=ventas.producto');
+		$this->db->join('categorias', 'categorias.id=productos.categoria');
+		$this->db->group_by("productos.id");
+		$this->db->order_by("count(productos.id)", "DESC");
+		$this->db->limit("1");
+		$rqs = $this->db->get();
+		return (is_bool($rqs))? array() : $rqs->row();
 	}
 
 }
