@@ -1,20 +1,21 @@
 .DS_Store
 
-application/cache/*
-!application/cache/index.html
+app/cache/*
+!app/cache/index.html
 
-application/logs/*
-!application/logs/index.html
+app/logs/*
+!app/logs/index.html
 
-!application/*/.htaccess
+!app/*/.htaccess
 
 composer.lock
+composer.json
 
 user_guide_src/build/*
 user_guide_src/cilexer/build/*
 user_guide_src/cilexer/dist/*
 user_guide_src/cilexer/pycilexer.egg-info/*
-/vendor
+
 
 # IDE Files
 #-------------------------
@@ -27,24 +28,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
-/tests/tests/
-/tests/results/
 .vscode/
-composer.json
-contributing.md
-license.txt
-.editorconfig
-/system
-/public/fonts/
-/public/js/*
-!/public/js/app.js
-/public/css/*
-!/public/css/app.css
-!/public/css/crud.css
-/app/logs/
-/app/libraries/
-/app/hooks/
-/app/config/*
-!/app/config/config.php
-!/app/config/routes.php
-!/app/config/autoload.php
