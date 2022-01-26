@@ -34,3 +34,16 @@ Despliegue
 * Alojar el directorio del proyecto en una ruta que se pueda procesar por el servidor apache. /var/www/html/konecta
 * Ingresamos el sql, haciendo import del mismo. Adjunto él ./db.sql, donde se define el usuario y la clave a la base de datos.
 * Ingresamos a la ruta http://localhost/konecta/productos 
+* git clone https://github.com/elegroag/konecta.git
+
+En shell se requiere:
+------
+```
+$~ git clone https://github.com/elegroag/konecta.git
+$~ cd konecta 
+$~ git pull origin master 
+$~ git checkout -b produccion 
+$~ git pull origin produccion 
+```
+
+* Segun el ambiente git intentara comprobar el Fast-forward que estas a punto de hacer. Se debe confirmar y ya está listo.
