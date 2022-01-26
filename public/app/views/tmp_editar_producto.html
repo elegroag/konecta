@@ -1,0 +1,109 @@
+
+<div class="col-lg-3 col-sm-4 hidden-xs">&nbsp;</div>
+<div class="col-lg-7 col-sm-7 col-xs-12">
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<button type="button" ng-click='lista()' class="btn btn-primary btn-sm pull-right">Lista</button>
+		<h4>Editar Productos</h4>
+	</div>
+	<div class="panel-body">
+		<form name="proFormEdit" id="form_producto" class="form-horizontal" method="post" action="#">
+			<div class="form-group">
+				<label for="" class="col-md-4 control-label">Referencia:</label>
+				<div class="col-md-6">
+					<input id="referencia" type="text" class="form-control" name="referencia"  value="{{producto.referencia}}" placeholder="referencia"  
+						required 
+						autofocus	
+						ng-model='producto.referencia'	
+					/>
+					<span class="help-block">
+						<strong data-erro='referencia'></strong>
+					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="" class="col-md-4 control-label">Nombre producto:</label>
+				<div class="col-md-6">
+					<input id="nombre" type="text" class="form-control" value="{{producto.nombre}}" name="nombre" placeholder="nombre"  
+						required 	
+						autofocus	
+						ng-model='producto.nombre'	
+					/>
+					<span class="help-block">
+						<strong data-erro='nombre'></strong>
+					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="precio" class="col-md-4 control-label">Precio:</label>
+				<div class="col-md-6">
+				 	<input id="precio" type="text" value="{{producto.precio}}"   class="form-control" name="precio" placeholder="precio"  
+				 		required 	
+				 		autofocus	
+						ng-model="producto.precio"	 
+						ng-required="true"	
+					/>
+				 	<span class="help-block">
+						<strong data-erro='precio'></strong>
+				 	</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="Peso" class="col-md-4 control-label">Peso:</label>
+				<div class="col-md-6">
+				 	<input id="peso" type="text" value='{producto.peso}' class="form-control" name="peso" placeholder="peso"  
+					 	required	 
+						autofocus	
+				 		ng-model="producto.peso"	 
+						ng-required="true"	
+					/>
+				 	<span class="help-block">
+						<strong data-erro='peso'></strong>
+				 	</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="stock" class="col-md-4 control-label">Stock:</label>
+				<div class="col-md-6">
+					<input id="stock" type="text" value='{{producto.stock}}' class="form-control" name="stock" placeholder="stock" autofocus 
+						ng-model="producto.stock" 	
+						ng-required="true" 
+						ng-pattern='/[0-9]+/'
+					/>
+				 	<span class="help-block" ng-show="proFormEdit.stock.$dirty && proFormEdit.stock.$invalid" topic="¡Error en validación!">
+						<p ng-show="proFormEdit.stock.$error.required">¡El stock es un valor requerido!</p>
+						<p ng-show="proFormEdit.stock.$error.pattern">¡El stock no es correcto!</p>
+						
+					</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="categorias" class="col-md-4 control-label">Categoría: </label>
+				<div class="col-md-6">
+					<select class="form-control" name="categoria" 
+						ng-model="categoria_actual"
+						ng-pattern="/[0-9]+/"
+						ng-change="recargar_categorias()"	
+						ng-options="option.categoria for option in categorias track by option.id"	
+					>
+					</select>
+				 	<span class="help-block" ng-show="productoForm.categoria.$dirty && productoForm.categoria.$invalid" topic="¡Error en validación!">
+						<p ng-show="productoForm.categoria.$error.required">¡La categoría es un valor requerido!</p>
+						<p ng-show="productoForm.categoria.$error.pattern">¡La categoría no es correcto!</p>
+					</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-8 col-md-offset-4">
+					<button type="button" name="actualizar" ng-click='actualizar()' class="btn btn-primary">Actualizar</button>
+					<button type="button" name="mostrar" ng-click='mostrar(producto)' class="btn btn-primary">Mostrar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>

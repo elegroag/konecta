@@ -1,0 +1,110 @@
+
+<div class="col-lg-3 col-sm-4 hidden-xs">&nbsp;</div>
+<div class="col-lg-7 col-sm-7 col-xs-12">
+	<div class="panel panel-default">
+	<div class="panel-heading">
+		<button type="button" ng-click='lista()' class="btn btn-primary btn-sm pull-right">Lista</button>
+		<h4>Agregar productos</h4>
+		<div class="hidden" id="show_result">
+			<div class="alert alert-success" role="alert"><p id="show_msj"></p></div>
+		</div>
+	</div>
+	<div class="panel-body">
+		<form name="productoForm" class="form-horizontal" method="post" action="#" id="form_productos">
+			<div class="form-group">
+				<label for="referencia" class="col-md-4 control-label">Referencia:</label>
+				<div class="col-md-6">
+				 	<input id="referencia" type="numeric"
+					 	value='' class="form-control" name="referencia" placeholder="#" autofocus   
+					 	ng-model="producto.referencia"	
+				 		ng-required="true"	
+				 	/>
+					<span class="help-block" ng-show="productoForm.referencia.$dirty && productoForm.referencia.$invalid" topic="¡Error en validación!">
+						<p ng-show="productoForm.referencia.$error.required">¡El referencia es un valor requerido!</p>
+				 	</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="nombre" class="col-md-4 control-label">Nombre producto:</label>
+				<div class="col-md-6">
+				 	<input id="nombre" type="text" value='' class="form-control" name="nombre" placeholder="nombre" 
+				 		required	 
+				 		autofocus	
+				 		ng-model="producto.nombre"	 
+						ng-required="true"	
+				 	/>
+				 	<span class="help-block">
+						<strong data-erro='nombre'></strong>
+				 	</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="precio" class="col-md-4 control-label">Precio:</label>
+				<div class="col-md-6">
+				 	<input id="precio" type="text" value='' class="form-control" name="precio" placeholder="precio"  
+				 		required 	
+				 		autofocus	
+						ng-model="producto.precio"	 
+						ng-required="true"	
+					/>
+				 	<span class="help-block">
+						<strong data-erro='precio'></strong>
+				 	</span>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="Peso" class="col-md-4 control-label">Peso:</label>
+				<div class="col-md-6">
+				 	<input id="peso" type="text" value='' class="form-control" name="peso" placeholder="peso"  
+					 	required	 
+						autofocus	
+				 		ng-model="producto.peso"	 
+						ng-required="true"	
+					/>
+				 	<span class="help-block">
+						<strong data-erro='peso'></strong>
+				 	</span>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="stock" class="col-md-4 control-label">Stock:</label>
+				<div class="col-md-6">
+					<input id="stock" type="text" value='' class="form-control" name="stock" placeholder="stock" autofocus 
+						ng-model="producto.stock" 	
+						ng-required="true" 
+						ng-pattern='/[0-9]+/'
+					/>
+				 	<span class="help-block" ng-show="productoForm.stock.$dirty && productoForm.stock.$invalid" topic="¡Error en validación!">
+						<p ng-show="productoForm.stock.$error.required">¡El stock es un valor requerido!</p>
+						<p ng-show="productoForm.stock.$error.pattern">¡El stock no es correcto!</p>
+						
+					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="categorias" class="col-md-4 control-label">Categoría: </label>
+				<div class="col-md-6">
+					<select class="form-control" name="categoria"
+						ng-model="producto.idcategoria"
+						ng-pattern="/[0-9]+/"
+						ng-change='change_categoria()'
+					>
+						<option ng-repeat="categoria in categorias" value="{{categoria.id}}">{{categoria.categoria}}</option>
+					</select>
+				 	<span class="help-block" ng-show="productoForm.categoria.$dirty && productoForm.categoria.$invalid" topic="¡Error en validación!">
+						<p ng-show="productoForm.categoria.$error.required">¡El categoria es un valor requerido!</p>
+						<p ng-show="productoForm.categoria.$error.pattern">¡El categoria no es correcto!</p>
+					</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-8 col-md-offset-4">
+					<button type="button" name="registrar"  ng-click='registrar()' ng-disabled="productoForm.$invalid" class="btn btn-primary">Registrar</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
