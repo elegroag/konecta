@@ -246,17 +246,17 @@ factory('_app', function($http, Notification, $state){
 	$scope.mas_vendidos = {};
 	$scope.mayor_stock = {};
 	
-	$app.informe_stock().
+	_app.informe_stock().
 	then(function successCallback(response){
-		if(response.data.state == 200)
+		if(response.data.success == true)
 		{
 			$scope.mas_vendidos = response.data.mas_vendidos;
 			$scope.mayor_stock = response.data.mayor_stock;
 		}else{
-			Notification.error_app('Registro no es posible, error de validación');
+			_app.mensaje(response.data.state, 'Registro no es posible, error de validación');
 		}
 	}, function errorCallback(response){
-		Notification.error('Error, el registro no es posible</br>'+response.responseText);
+		_app.mensaje(response.data.state, 'Error, el registro no es posible</br>'+response.responseText);
 	});
 
 	$scope.lista = function(){

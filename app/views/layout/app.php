@@ -45,12 +45,7 @@
                         &nbsp;
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                      <?if($this->session->userdata("on_session")){?>
-                        <li><a href="<?=site_url()?>login">Login</a></li>
-                        <li><a href="<?=site_url()?>register">Register</a></li>
-                      <?}else{?>                   
-                        <li><a href="<?=site_url()?>logout">SALIR</a></li>
-                       <?}?>
+                      
                     </ul>
                 </div>
             </div>

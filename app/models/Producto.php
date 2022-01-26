@@ -118,4 +118,27 @@
 		return (isset($fields_names[$field]))? $fields_names[$field]: $field;
 	}
 
+	public function mayor_stock()
+	{
+		$this->db->select('productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
+		$this->db->select_max('stock');
+		$this->db->from(self::$table);
+		$this->db->join('categorias', 'categorias.id=productos.categoria');
+		$rqs = $this->db->get();
+		return (is_bool($rqs))? array() : $rqs->row();
+	}
+
+	public function mas_vendidos()
+	{
+		$this->db->select('count(productos.id) as cantidad, productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria');
+		$this->db->from("ventas");
+		$this->db->join('productos', 'productos.id=ventas.producto');
+		$this->db->join('categorias', 'categorias.id=productos.categoria');
+		$this->db->group_by("productos.id");
+		$this->db->order_by("count(productos.id)", "DESC");
+		$this->db->limit("1");
+		$rqs = $this->db->get();
+		return (is_bool($rqs))? array() : $rqs->row();
+	}
+
 }

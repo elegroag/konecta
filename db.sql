@@ -48,7 +48,7 @@ INSERT INTO konecta_development.productos (nombre, referencia, precio, peso, cat
 CREATE TABLE konecta_development.ventas (
 	id int(20) auto_increment NOT NULL PRIMARY KEY,
 	producto int(15) NOT NULL,
-	fectura int(15) NOT NULL,
+	factura int(15) NOT NULL,
 	createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NULL
 )
 ENGINE=InnoDB
