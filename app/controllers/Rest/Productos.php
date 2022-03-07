@@ -22,14 +22,13 @@ class Productos extends REST_Controller
 
 	public function index_post()
 	{
-		$data = json_decode(file_get_contents("php://input"));
 		$insert = [
-			"referencia"=> $data->referencia,
-			"precio"=> $data->precio,
-			"nombre"=> $data->nombre,
-			"peso"=> $data->peso,
-			"stock"=> $data->stock,
-			"categoria"=> $data->idcategoria
+			"referencia"=> $this->post('referencia'),
+			"precio"=> $this->post('precio'),
+			"nombre"=> $this->post('nombre'),
+			"peso"=> $this->post('peso'),
+			"stock"=> $this->post('stock'),
+			"categoria"=> $this->post('categoria')
 		];
 		$producto = $this->producto->create($insert);
 		if($producto){
@@ -50,14 +49,13 @@ class Productos extends REST_Controller
 	public function index_put()
 	{
 		$id = $this->uri->segment(2, 0);
-		$data = json_decode(file_get_contents("php://input"));
 		$values = [
-			"referencia"=> $data->referencia,
-			"precio"=> $data->precio,
-			"nombre"=> $data->nombre,
-			"peso"=> $data->peso,
-			"stock"=> $data->stock,
-			"categoria"=> $data->idcategoria
+			"referencia"=> $this->post('referencia'),
+			"precio"=> $this->post('precio'),
+			"nombre"=> $this->post('nombre'),
+			"peso"=> $this->post('peso'),
+			"stock"=> $this->post('stock'),
+			"categoria"=> $this->post('categoria')
 		];
 		$producto = $this->producto->create($values, true);
 		if($producto)
