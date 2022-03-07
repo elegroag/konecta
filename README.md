@@ -34,3 +34,20 @@ Despliegue
 * Alojar el directorio del proyecto en una ruta que se pueda procesar por el servidor apache. /var/www/html/konecta
 * Ingresamos el sql, haciendo import del mismo. Adjunto él ./db.sql, donde se define el usuario y la clave a la base de datos.
 * Ingresamos a la ruta http://localhost/konecta/productos 
+
+Consultas
+----
+
+```
+SELECT max(stock), productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria 
+FROM productos
+INNER JOIN categorias ON categorias.id=productos.categoria;
+
+SELECT count(productos.id) as cantidad, productos.id, nombre, referencia, precio, stock, precio, peso, productos.categoria as idcategoria, categorias.categoria 
+FROM ventas
+INNER JOIN productos ON productos.id=ventas.producto 
+INNER JOIN categorias ON categorias.id=productos.categoria
+GROUP BY productos.id
+ORDER BY count(productos.id) DESC 
+LIMIT 1;
+```
