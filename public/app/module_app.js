@@ -1,43 +1,31 @@
-
 const module_app = angular.module('app_crud', ['ui.router', 'ui-notification']);
-var _app = {};
-_app.productos = _productos;
-_app.categorias = _categorias;
-
-
-module_app.config(
-function($stateProvider, $urlRouterProvider, NotificationProvider){
+module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvider){
 	$stateProvider
-	.state({
-		name: 'index',
+	.state('index', {
 		url: '/index',
 		templateUrl: base_url+"public/app/views/tmp_tabla_productos.html",
 		controller: 'ListarProductos'
 	})
-	.state({
-		name: 'agregar',
+	.state('agregar',{
 		url: '/agregar',
 		templateUrl: base_url+"public/app/views/tmp_form_producto.html",
 		controller: 'AgregarProducto'
 	})
-	.state({
-		name: 'editar',
+	.state('editar', {
 		url: '/editar/:id',
 		templateUrl: base_url+"public/app/views/tmp_editar_producto.html",
 		controller: 'EditarProducto'
 	})
-	.state({
-		name: 'mostrar',
+	.state('mostrar',{
 		url: '/mostrar/:id',
 		templateUrl: base_url+"/public/app/views/tmp_mostrar_producto.html",
 		controller: 'MostrarProducto'
 	})
-	.state({
-		name: "ventas_stock",
+	.state("ventas_stock", {
 		url: "/ventas_stock",
 		templateUrl: base_url+"/public/app/views/tmp_ventas_stock.html",
 		controller: 'VentasStock'
-	})	
+	});
 
 	$urlRouterProvider.otherwise('index');
 	NotificationProvider.setOptions({
@@ -49,12 +37,29 @@ function($stateProvider, $urlRouterProvider, NotificationProvider){
 		positionX: 'left',
 		positionY: 'bottom'
 	});
-}).
-factory('_app', function($http, Notification, $state){
+})
+.factory('_app', function($http, Notification, $state){
+	/* Manejar la persistencia de la aplicacion a diferencia del service este debe retornar un valor*/
+	var _app = {};
+	_app.productos = _productos;
+	_app.categorias = _categorias;
 	_app.categorias = _categorias;
 	_app.categoria = {};
 	_app.producto = {};
 	_app.ventas = {};
+
+	_app.getProductos = function(offset='0'){
+		return $http.post(
+		site_url+'productos/pagina_productos/'+offset,
+		{
+			"limit":1000,
+			"order_by":null,
+			"filters":null,
+			"base_url": "productos/pagina_productos",
+			"num_links": 3,
+			"per_page":5
+		});
+	};
 
 	_app.mensaje = function(texto, state){
 		if(state == 200){
@@ -120,7 +125,7 @@ factory('_app', function($http, Notification, $state){
 		});
 	};
 
-	_app.informe_stock =function(){
+	_app.informe_stock = function(){
 		return $http({
 			url: `${site_url}productos/informe`,
 			method: 'get',
@@ -131,9 +136,27 @@ factory('_app', function($http, Notification, $state){
 	return _app;
 })
 .controller('ListarProductos', function($scope, $state, _app){
-	$scope.productos = _app.productos;
+	$scope.productos =  [];
 	$scope.categorias = _app.categorias;
 	_app.producto = {};
+
+	_app.getProductos()
+	.success(function(response){
+		angular.copy(response.data, _app.productos);
+		$scope.productos = _app.productos;
+	}).error(function(err){
+		console.log(err);
+	});
+
+	$scope.pagina = function(offset){
+		_app.getProductos(offset)
+		.success(function(response){
+			angular.copy(response.data, _app.productos);
+			$scope.productos = _app.productos;
+		}).error(function(err){
+			console.log(err);
+		});
+	};
 
 	$scope.agregar = function(){
 		$state.go('agregar');
