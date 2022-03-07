@@ -41,7 +41,23 @@
 						</tr>
 					</tbody>
 				</table>
-				<div ng-bind-html="pagination"></div>
+				<nav aria-label="Page navigation" align="center">
+					<ul class="pagination pagination-sm no-margin pull-right">
+						<li ng-class="{disabled:!navigators.prev.state}">
+							<a class='btn btn-primary active' href="javascript:void();" aria-label="Previous" ng-click="prev()" >
+								<i class="fa fa-fast-forward"></i> Anterior
+							</a>
+						</li>
+						<li ng-repeat="page in pages" ng-class="{active:page.active}" ng-disabled="page.active">
+							<a class='btn btn-default' href="javascript:void();" ng-click="setPageActive(page.page)">{{page.page}}</a>
+						</li>
+						<li ng-class="{disabled:!navigators.next.state}">
+							<a class='btn btn-default'  href="javascript:void();" aria-label="Next" ng-click="next()">
+								<i class="fa fa-step-forward"></i> Siguiente
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

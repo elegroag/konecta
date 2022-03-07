@@ -42,7 +42,7 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 	/* Manejar la persistencia de la aplicacion a diferencia del service este debe retornar un valor*/
 	let _app = {};
 	_app.filter_pagination = {
-		"limit": 10,
+		"limit": 5,
 		"order_by": null,
 		"filters": [],
 		"base_url": "productos/pagina_productos",
