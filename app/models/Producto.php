@@ -1,9 +1,11 @@
 	<?php
 	defined('BASEPATH') OR exit('No direct script access allowed');
 
-	class Producto extends CI_Model{
+	class Producto extends CI_Model {
 
 	public static $table = "productos";
+	public $campos_tabla = array();
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -139,6 +141,62 @@
 		$this->db->limit("1");
 		$rqs = $this->db->get();
 		return (is_bool($rqs))? array() : $rqs->row();
+	}
+
+	public function filtro_data()
+	{
+		$this->db->select('
+			productos.id, 
+			productos.nombre, 
+			productos.referencia, 
+			productos.precio, 
+			productos.stock, 
+			productos.precio, 
+			productos.peso, 
+			productos.categoria as idcategoria, 
+			categorias.categoria'
+		);
+		$this->campos_tabla = [
+			"id"=> "Id",
+			"nombre"=> "Nombre",
+			"referencia"=> "Referencia",
+			"precio"=> "Precio",
+			"stock"=> "Stock",
+			"precio"=> "Precio",
+			"peso"=> "Peso",
+			"categoria"=> "Categoria",
+			"options"=> "Opciones"
+		];
+		$this->db->join('categorias', 'categorias.id=productos.categoria');
+	}	
+
+	public function filtro($_limit=null, $_offset=null, $_like_y=[], $_like_or=[], $_order_by=[])
+	{
+		$this->filtro_data();
+		if(is_array($_like_y) && count($_like_y) > 0)
+		{
+			for($i=0; $i < count($_like_y); $i++)
+			{
+				$this->db->like(''.$_like_y[$i]["field"], ''.$_like_y[$i]["value"]);                       
+			}
+		}
+		if(is_array($_like_or) && count($_like_or) > 0)
+		{
+			for($i=0; $i < count($_like_or); $i++)
+			{ 
+				$this->db->or_like(''.$_like_or[$i]["field"], ''.$_like_or[$i]["value"]);                       
+			}
+		}
+		if(is_array($_order_by))
+		{
+			$this->db->order_by($_order_by["field"], $_order_by["type"]); 
+		}
+		if($_limit != null && $_offset != null)
+		{
+			return $this->db->get(self::$table, $_limit, $_offset);       
+		}else{
+			return $this->db->get(self::$table);
+		}
 	}
 
 }

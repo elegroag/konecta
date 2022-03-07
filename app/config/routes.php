@@ -12,3 +12,4 @@ $route['rest_productos/:num']['put']         = 'Rest/Productos';
 $route['rest_productos/:num']['delete']      = 'Rest/Productos';
 $route['rest_productos/producto/:num']['get'] = 'Rest/Productos/producto';
 $route['productos/informe']                  = 'Dash/ManagerProductos/informe';
+$route['productos/pagina_productos/:num']['post'] = 'Dash/ManagerProductos/pagina_productos';
