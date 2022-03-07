@@ -1,4 +1,4 @@
-const module_app = angular.module('app_crud', ['ui.router', 'ui-notification']);
+const module_app = angular.module('app_crud', ['ui.router', 'ui-notification', 'ngSanitize']);
 module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvider){
 	$stateProvider
 	.state('index', {
@@ -40,9 +40,18 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 })
 .factory('_app', function($http, Notification, $state){
 	/* Manejar la persistencia de la aplicacion a diferencia del service este debe retornar un valor*/
-	var _app = {};
+	let _app = {};
+	_app.filter_pagination = {
+		"limit": 10,
+		"order_by": null,
+		"filters": [],
+		"base_url": "productos/pagina_productos",
+		"num_links": 2,
+		"per_page": 3,
+		"offset":1
+	};
+
 	_app.productos = _productos;
-	_app.categorias = _categorias;
 	_app.categorias = _categorias;
 	_app.categoria = {};
 	_app.producto = {};
@@ -50,15 +59,9 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 
 	_app.getProductos = function(offset='0'){
 		return $http.post(
-		site_url+'productos/pagina_productos/'+offset,
-		{
-			"limit":1000,
-			"order_by":null,
-			"filters":null,
-			"base_url": "productos/pagina_productos",
-			"num_links": 3,
-			"per_page":5
-		});
+			site_url+'productos/pagina_productos/'+offset,
+			_app.filter_pagination
+		);
 	};
 
 	_app.mensaje = function(texto, state){
@@ -137,6 +140,7 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 })
 .controller('ListarProductos', function($scope, $state, _app){
 	$scope.productos =  [];
+	$scope.pagination = "<br/>";
 	$scope.categorias = _app.categorias;
 	_app.producto = {};
 
@@ -144,6 +148,7 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 	.success(function(response){
 		angular.copy(response.data, _app.productos);
 		$scope.productos = _app.productos;
+		$scope.pagination = atob(response.pagination);
 	}).error(function(err){
 		console.log(err);
 	});

@@ -17,7 +17,8 @@
       <script src="<?=asset('angular-assets/angular-ui-notification.min.js') ?>"></script>
       <script src="<?=asset('angular-assets/angular-messages.min.js') ?>"></script>
       <script src="<?=asset('angular-assets/angular-mocks.js') ?>"></script>
-      <script src="<?=asset('angular-assets/angular-animate.min.js') ?>"></script>      
+      <script src="<?=asset('angular-assets/angular-animate.min.js') ?>"></script> 
+      <script src="<?=asset('angular-assets/angular-sanitize.js') ?>"></script> 
       <?if(isset($templates)){
         echo $templates;        
       }?>

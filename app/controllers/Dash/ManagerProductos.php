@@ -31,12 +31,14 @@ class ManagerProductos extends CI_Controller {
 		$this->load->library('jpagination');
 		$this->load->library('table');
 		$this->load->helper('form');
+		$json = file_get_contents('php://input');
+		$post = json_decode($json);
 		
-		$offset = $this->uri->segment(3, $offset);
-		$limit = $this->input->post('limit');
-		$order_by = $this->input->post('order_by');
-		$filters = $this->input->post('filters');
-
+		$limit = $post->limit;
+		$offset = $post->offset;
+		$order_by = $post->order_by;
+		$filters = $post->filters;
+		
 		$like_y = array();
 		$like_or = array();
 		for($i=0; $i < count($filters); $i++)
@@ -51,9 +53,9 @@ class ManagerProductos extends CI_Controller {
 
 		$config = [
 			'div' 		=> false,
-			'base_url' 	=> ($this->input->post('base_url'))? $this->input->post('base_url') : site_url().'productos/pagina_productos',
-			'num_links' => ($this->input->post('num_links'))? $this->input->post('num_links') : 5,
-			'per_page' 	=> ($this->input->post('per_page'))? $this->input->post('per_page') : 15,
+			'base_url' 	=> ($post->base_url)? $post->base_url : site_url().'productos/pagina_productos',
+			'num_links' => ($post->num_links)? $post->num_links : 5,
+			'per_page' 	=> ($post->per_page)? $post->per_page : 15,
 			'total_rows' => (!is_bool($query))? $query->num_rows() : 0
 		];
 		$this->jpagination->initialize($config);
@@ -94,7 +96,12 @@ class ManagerProductos extends CI_Controller {
 		echo json_encode([
 			"data" => $data, 
 			"tabla" => base64_encode($this->table->generate($data)), 
-			"pagination" => base64_encode($pagination)
+			"pagination" => base64_encode($pagination),
+			"offset" => $offset,
+			"limit" => $limit,
+			"offset" => $offset,
+			"order_by" => $order_by,
+			"filters" => $filters
 		]);
 	}
 
