@@ -28,7 +28,7 @@ class Productos extends REST_Controller
 			"nombre"=> $this->post('nombre'),
 			"peso"=> $this->post('peso'),
 			"stock"=> $this->post('stock'),
-			"categoria"=> $this->post('categoria')
+			"categoria"=> $this->post('idcategoria')
 		];
 		$producto = $this->producto->create($insert);
 		if($producto){

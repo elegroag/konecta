@@ -91,7 +91,7 @@
 						ng-pattern="/[0-9]+/"
 						ng-change='change_categoria()'
 					>
-						<option ng-repeat="categoria in categorias" value="{{categoria.id}}">{{categoria.categoria}}</option>
+						<option ng-repeat="categoria in categorias" ng-value="{{categoria.id}}">{{categoria.categoria}}</option>
 					</select>
 				 	<span class="help-block" ng-show="productoForm.categoria.$dirty && productoForm.categoria.$invalid" topic="¡Error en validación!">
 						<p ng-show="productoForm.categoria.$error.required">¡El categoria es un valor requerido!</p>

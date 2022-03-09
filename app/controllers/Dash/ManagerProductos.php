@@ -58,15 +58,15 @@ class ManagerProductos extends CI_Controller {
 			'per_page' 	=> ($post->per_page)? $post->per_page : 15,
 			'total_rows' => (!is_bool($query))? $query->num_rows() : 0
 		];
-		$this->jpagination->initialize($config);
-		$pagination = $this->jpagination->create_links();
+		/* $this->jpagination->initialize($config); */
+		/* $pagination = $this->jpagination->create_links(); */
 		$data = $this->producto->filtro($limit, $offset, $like_y, $like_or, $order_by);
 		
-		$this->table->set_heading(array_values($this->producto->campos_tabla));
+		/* $this->table->set_heading(array_values($this->producto->campos_tabla)); */
 		if(!is_bool($data))
 		{
 			$data = $data->result_array();
-			foreach ($data as $ai => $row) 
+			/* foreach ($data as $ai => $row) 
 			{
 				$fila = array_values($row);
 				$fila[] = "". 
@@ -89,19 +89,20 @@ class ManagerProductos extends CI_Controller {
 					'onClick' => 'borrar(this)'
 				]);
 				$this->table->add_row($fila);
-			}
+			} */
 		}else{
 			$data = [];
 		}
 		echo json_encode([
 			"data" => $data, 
-			"tabla" => base64_encode($this->table->generate($data)), 
-			"pagination" => base64_encode($pagination),
 			"offset" => $offset,
 			"limit" => $limit,
-			"offset" => $offset,
 			"order_by" => $order_by,
-			"filters" => $filters
+			"filters" => $filters,
+			"campos_filtro"=> array_keys($this->producto->campos_tabla),
+			"valores_filtro"=> $this->producto->campos_tabla,
+			"total_rows"=> $config['total_rows'],
+			"per_page"=> $config['per_page']
 		]);
 	}
 

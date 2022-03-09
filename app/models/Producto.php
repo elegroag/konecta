@@ -191,7 +191,7 @@
 		{
 			$this->db->order_by($_order_by["field"], $_order_by["type"]); 
 		}
-		if($_limit != null && $_offset != null)
+		if($_limit != null)
 		{
 			return $this->db->get(self::$table, $_limit, $_offset);       
 		}else{

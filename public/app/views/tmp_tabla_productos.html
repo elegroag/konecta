@@ -1,16 +1,46 @@
 <div class="col-lg-1 hidden-xs">&nbsp;</div>
-<div class="col-lg-10 col-xs-12">
+<div class="col-lg-11 col-xs-12">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<div class="form-inline pull-right">
 				<div class="form-group">
-					<button type="button" ng-click='agregar()' class="btn btn-primary btn-sm ">Agregar +</button>
+					<label>
+						<small>Limite:</small> 
+						<select name='limit' ng-model="limit" ng-change="paginate()" class='form-control bg-primary'>
+							<option ng-repeat="limite in limites" ng-value="{{limite}}">{{limite}}</option>
+						</select>
+					</label>
 				</div>
 				<div class="form-group">
-					<button type="button" ng-click='ventas_stock()' class="btn btn-primary btn-sm">Informe Ventas + Stock</button>
+					<label>
+						<small>Criterio:</small> 
+						<select name='criterio_filtro' ng-model="criterio_filtro" class='form-control bg-primary'>
+							<option ng-repeat="campo in campos_filtro" ng-value="{{campo}}">{{campo}}</option>
+						</select>
+					</label>
+				</div>
+				<div class="form-group">
+					<label>
+						<small></small>
+						<input id="valor_filtro" type="text" class='form-control bg-primary' name="valor_filtro" placeholder="valor" ng-model="valor_filtro" ng-blur="paginate()"/>
+					</label>
+				</div>
+				<div class="form-group">
+					<label>
+						<button type="button" ng-click='clear_filter()' class="btn btn-primary"><i>-</i></button>
+					</label>
+				</div>
+				<div class="form-group">
+					<label>
+						<button type="button" ng-click='agregar()' class="btn btn-primary">Agregar +</button>
+					</label>
+				</div>
+				<div class="form-group">
+					<label>
+						<button type="button" ng-click='ventas_stock()' class="btn btn-primary">Informe Ventas + Stock</button>
+					</label>
 				</div>
 			</div>
-
 			<h4>Lista de productos</h4>
 		</div>
 		<div class="panel-body padding-0">
@@ -41,24 +71,38 @@
 						</tr>
 					</tbody>
 				</table>
-				<nav aria-label="Page navigation" align="center">
-					<ul class="pagination pagination-sm no-margin pull-right">
-						<li ng-class="{disabled:!navigators.prev.state}">
-							<a class='btn btn-primary active' href="javascript:void();" aria-label="Previous" ng-click="prev()" >
-								<i class="fa fa-fast-forward"></i> Anterior
-							</a>
-						</li>
-						<li ng-repeat="page in pages" ng-class="{active:page.active}" ng-disabled="page.active">
-							<a class='btn btn-default' href="javascript:void();" ng-click="setPageActive(page.page)">{{page.page}}</a>
-						</li>
-						<li ng-class="{disabled:!navigators.next.state}">
-							<a class='btn btn-default'  href="javascript:void();" aria-label="Next" ng-click="next()">
-								<i class="fa fa-step-forward"></i> Siguiente
-							</a>
-						</li>
-					</ul>
-				</nav>
+				<div class='col-xs-12'>
+					<nav aria-label="Page navigation" align="center">
+						<ul class="pagination pagination-sm no-margin pull-right">
+							<li ng-class="{disabled:!navigators.prev.state}">
+								<a class='btn btn-primary' href="javascript:void();" aria-label="Previous" ng-click="first()" >
+									<i class="fa fa-fast-forward"></i> Primero
+								</a>
+							</li>
+							<li ng-class="{disabled:!navigators.prev.state}">
+								<a class='btn btn-default' href="javascript:void();" aria-label="Previous" ng-click="prev()" >
+									<i class="fa fa-fast-forward"></i> <<
+								</a>
+							</li>
+							<li ng-repeat="page in pages" ng-class="{active:page.active}" ng-disabled="page.active">
+								<a class='btn btn-default' href="javascript:void();" ng-click="PageActive(page.page)">{{page.page}}</a>
+							</li>
+							<li ng-class="{disabled:!navigators.next.state}">
+								<a class='btn btn-default'  href="javascript:void();" aria-label="Next" ng-click="next()">
+									<i class="fa fa-step-forward"></i> >>
+								</a>
+							</li>
+							<li ng-class="{disabled:!navigators.next.state}">
+								<a class='btn btn-primary' href="javascript:void();" aria-label="Previous" ng-click="last()" >
+									<i class="fa fa-fast-forward"></i> Ultimo
+								</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
 			</div>
+			<br/>
+			<div class='col-md-6'><p>Cantidad: {{total_rows}}</p></div>
 		</div>
 	</div>
 </div>

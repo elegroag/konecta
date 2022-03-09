@@ -139,25 +139,133 @@ module_app.config(function($stateProvider, $urlRouterProvider, NotificationProvi
 	return _app;
 })
 .controller('ListarProductos', function($scope, $state, _app){
+	$scope.categorias = _app.categorias;
+
+	$scope.total_rows = 0;
+	$scope.navigators = {prev:{state:true}, next:{state:true}};
+	$scope.pages = [];
+	$scope.limit = 5;
 	$scope.productos =  [];
 	$scope.pagination = "<br/>";
-	$scope.categorias = _app.categorias;
+	$scope.campos_filtro = [];
+	$scope.valores_filtro = [];
+	$scope.copy_items = [];
+
+	$scope.valor_filtro = null;
+	$scope.criterio_filtro = null;
+	$scope.limites = [5,10,15,25,30,50,100];
 	_app.producto = {};
+	
 
 	_app.getProductos()
 	.success(function(response){
 		angular.copy(response.data, _app.productos);
 		$scope.productos = _app.productos;
-		$scope.pagination = atob(response.pagination);
+		$scope.campos_filtro = response.campos_filtro; 
+		$scope.valores_filtro = response.valores_filtro;
+		$scope.total_rows = response.total_rows;
+		$scope.per_page = response.per_page;
+
+    	for(let i=0; i< $scope.per_page; i++)
+		{
+      		$scope.pages.push({
+				"start":(i*$scope.limit), 
+				"page": i+1, 
+				"active":false
+			});
+		}
+		$scope.setPageActive(1); 
 	}).error(function(err){
 		console.log(err);
 	});
 
-	$scope.pagina = function(offset){
-		_app.getProductos(offset)
-		.success(function(response){
-			angular.copy(response.data, _app.productos);
-			$scope.productos = _app.productos;
+	$scope.PageActive = function(page){
+		$scope.paginate(page);
+	};
+
+	$scope.setPageActive = function(page){
+		index = page-1;
+		let n =   $scope.pages.length;
+		for(i=0; i<n; i++)
+		{
+		  	if($scope.pages[i].active){
+				current_page = $scope.pages[i].page;
+			}
+		  	if(i==index){
+				$scope.pages[i].active = true;
+		  	}else{
+		  		$scope.pages[i].active= false;
+			}
+		}
+	 	$scope.navigators["next"].state =  index < (n-1) ? true:false;
+	 	$scope.navigators["prev"].state =  index > 0 ? true:false;
+	};
+
+	$scope.clear_filter = function()
+	{
+		$scope.valor_filtro = null;
+		$scope.criterio_filtro = null;
+		$scope.limit = 5;
+		_app.filter_pagination.filters =[];
+		$scope.paginate(0);
+	};
+
+	
+	$scope.prev = function()
+	{ 
+		if($scope.navigators.prev.state){
+			let page = $scope.getCurrentPage()-1
+			$scope.paginate(page);
+		}
+	}
+	
+	$scope.next = function(){
+		if($scope.navigators.next.state){
+			let page = $scope.getCurrentPage()+1;
+			$scope.paginate(page);
+		}
+	}
+	
+	$scope.getCurrentPage = function()
+	{
+		for(i=0; i < $scope.pages.length; i++){
+			if($scope.pages[i].active){
+				return i+1;
+			}
+		}
+	}
+
+	$scope.paginate = function(offset=0)
+	{
+		_app.filter_pagination.limit = parseInt($scope.limit);
+		_app.filter_pagination.offset = offset;
+
+		if($scope.valor_filtro !== null)
+		{
+			_app.filter_pagination.filters = [{
+				"name": $scope.criterio_filtro,
+				"value": $scope.valor_filtro
+			}];
+		}
+		_app.getProductos(offset).success(function(response){
+			
+			$scope.productos = response.data;
+			$scope.campos_filtro = response.campos_filtro;
+			$scope.valores_filtro = response.valores_filtro;
+			$scope.total_rows = response.total_rows;
+			$scope.per_page = response.per_page;
+			_app.filter_pagination.offset = response.offset;
+			
+			$scope.pages = [];
+			for(let i=0; i< $scope.per_page; i++)
+			{
+				$scope.pages.push({
+					"start":(i*$scope.limit), 
+					"page": i+1, 
+					"active":false
+				});
+			}
+			$scope.setPageActive(offset);
 		}).error(function(err){
 			console.log(err);
 		});
